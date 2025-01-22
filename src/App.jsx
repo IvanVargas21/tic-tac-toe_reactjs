@@ -1,35 +1,46 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+//Parent Component
+function Board() {
 
+  //Child Component
+  //destructure the num prop with {num}.
+  //you can also access it as props.num if you write function Square(props)
+  function Square(){
+    //state/value is independet of the others.
+    const [value, setValue] = useState(null)
+    function handleClick(){
+      setValue('x')
+    }
+    return <button 
+            className="square"
+            onClick={handleClick}
+            >{value}</button>
+  }
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="board-row">
+        {/* 
+          props are similar to variables in the sense that they allow you to pass data from parent component to child component. 
+        */}
+        <Square/>
+        <Square/>
+        <Square/>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+      <div className="board-row">
+        <Square/>
+        <Square/>
+        <Square/>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <div className="board-row">
+        <Square/>
+        <Square/>
+        <Square/>
+      </div>
     </>
   )
 }
 
-export default App
+export default Board
