@@ -7,11 +7,6 @@ import './App.css'
   //destructure the num prop with {num}.
   //you can also access it as props.num if you write function Square(props)
   function Square({value, onSquareClick}){
-    //state/value is independet of the others.
-    // const [value, setValue] = useState(null)
-    // function handleClick(){
-    //   setValue('X')
-    // }
     return <button 
             className="square"
             onClick={onSquareClick}
@@ -19,6 +14,8 @@ import './App.css'
   }
 //Parent Component
 function Board() {
+  //each time player moves, xIsNext will be flipped to determin which player foes next and the game's state will be saved.
+  const [xIsNext, setXIsNext] = useState(true)
   //9 null - 9 components
   const [squares, setSquares] = useState(Array(9).fill(null))
 
@@ -27,15 +24,28 @@ function Board() {
   function handleClick(i) {
     //copying the squares array.
     const nextSquares = squares.slice();
-    //updates the nextSquares array to add X to the first([0] index) square.
-    nextSquares[i] = "X";
+    if(squares[i] || calculateWinner(squares)){
+      return;
+    }
+    if(xIsNext) {
+      nextSquares[i] = "X";
+    }else{
+      nextSquares[i] = "O";
+    }
     setSquares(nextSquares)
+    setXIsNext(!xIsNext)
   }
 
-
-
+  const winner = calculateWinner(squares);
+  let status;
+  if(winner){
+    status = "Winner: " + winner;
+  }else {
+    status = "Next player: " +(xIsNext? "X": "0")
+  }
   return (
     <>
+      <div className="status">{status}</div>
       <div className="board-row">
         {/* 
           props are similar to variables in the sense that they allow you to pass data from parent component to child component. 
@@ -56,6 +66,28 @@ function Board() {
       </div>
     </>
   )
+
+  function calculateWinner(squares){
+    const lines = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 3],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6]
+    ]
+    for(let i=0; i<lines.length; i++){
+      const [a,b,c] = lines[i];
+      //squares[a] , squares[a] === squares[b], squres[a] === squares[c]
+      //Checks winning combinations has the same value(e.g, 'X', 'X', 'X') or ('O', 'O', 'O')
+      if(squares[a] && squares[a] === squares[b] && squares[a] === squares[c]){
+        return squares[a]
+      }
+    }
+    return null;
+  }
 }
 
 export default Board
