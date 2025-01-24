@@ -2,7 +2,26 @@ import { useState } from 'react'
 
 import './App.css'
 
+  export default function Game(){
+    const [xIsNext, setXIsNext] = useState(true);
+    const [history, setHistory] = useState([Array(9).fill(null)]);
+    const currentSquares = history[history.length - 1];
 
+    function handlePlay(nextSquares){
+      setHistory([...history, nextSquares]);
+      setXIsNext(!xIsNext);
+    }
+    return (
+    <div className="game">
+          <div className="game-board">
+            <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+          </div>
+          <div className="game-info">
+            <ol>{/*TODO*/}</ol>
+          </div>
+        </div>
+    )
+  }
   //Child Component
   //destructure the num prop with {num}.
   //you can also access it as props.num if you write function Square(props)
@@ -13,11 +32,11 @@ import './App.css'
             >{value}</button>
   }
 //Parent Component
-function Board() {
+function Board({ xIsNext, squares, onPlay }) {
   //each time player moves, xIsNext will be flipped to determin which player foes next and the game's state will be saved.
-  const [xIsNext, setXIsNext] = useState(true)
-  //9 null - 9 components
-  const [squares, setSquares] = useState(Array(9).fill(null))
+  // const [xIsNext, setXIsNext] = useState(true)
+  // //9 null - 9 components
+  // const [squares, setSquares] = useState(Array(9).fill(null))
 
   //lets React know the state of the component has changed.
   //triggers a re-render of the components that use the squares state (Board), as will as it child components (the square components.)
@@ -32,8 +51,7 @@ function Board() {
     }else{
       nextSquares[i] = "O";
     }
-    setSquares(nextSquares)
-    setXIsNext(!xIsNext)
+    onPlay(nextSquares)
   }
 
   const winner = calculateWinner(squares);
@@ -67,6 +85,7 @@ function Board() {
     </>
   )
 
+
   function calculateWinner(squares){
     const lines = [
       [0, 1, 2],
@@ -90,4 +109,3 @@ function Board() {
   }
 }
 
-export default Board
